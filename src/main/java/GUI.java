@@ -1,3 +1,5 @@
+import Entity.Usuario;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,6 +12,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 
 public class GUI extends Application {
     private Scene loginScene;
@@ -24,6 +31,9 @@ public class GUI extends Application {
     private BorderPane filterPane;
     private int counterx = 0;
     private int countery = 0;
+    private TextField usernametextField;
+    private PasswordField passwordField;
+    private Usuario user;
 
     @Override
     public void start(Stage mainStage) {
@@ -58,14 +68,14 @@ public class GUI extends Application {
         loginLabel.setFont(Font.font("Open Sans", FontWeight.BOLD, 30));
 
         //Username TextField Config
-        TextField usernametextField = new TextField();
+        usernametextField = new TextField();
         usernametextField.setPromptText("Username");
         usernametextField.setMinHeight(40);
         usernametextField.setStyle("-fx-background-color: FFFAFC; -fx-background-radius: 20;-fx-padding: 0 15 0 15;");
 
 
         //Password TextField Config
-        PasswordField passwordField = new PasswordField();
+        passwordField = new PasswordField();
         passwordField.setPromptText("Contraseña");
         passwordField.setMinHeight(40);
         passwordField.setStyle("-fx-background-color: FFFAFC; -fx-background-radius: 20; -fx-padding: 0 15 0 15;");
@@ -75,7 +85,7 @@ public class GUI extends Application {
         loginButton.setPrefSize(150,40);
         loginButton.getStyleClass().add("hover-button");
         loginButton.setOnAction(event -> {
-            setupMainScene();
+            loginFunction();
         });
 
         //Register Container
@@ -114,6 +124,53 @@ public class GUI extends Application {
 
         loginScene = new Scene(loginRoot, 1280, 720);
         loginScene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
+    }
+
+    private void loginFunction() {
+        usernametextField.getText();
+        passwordField.getText();
+        try {
+            // Crear cliente HTTP
+            HttpClient client = HttpClient.newHttpClient();
+            // Serializar los datos
+            String jsonData = "{" +
+                    "\"nombreUsuario\": \"" + (usernametextField.getText() != null ? usernametextField.getText() : "") + "\"," +
+                    "\"contrasena\": \"" + passwordField.getText() + "\"" +
+                    "}";
+            System.out.println(jsonData);
+
+
+            // Crear la solicitud HTTP
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8094/autenticar")) // Cambia esta URL
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonData, StandardCharsets.UTF_8))
+                    .build();
+
+            // Enviar la solicitud y manejar la respuesta
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                System.out.println("Login Exitoso: " + response.body());
+                try {
+                    String userJson = response.body();
+                    ObjectMapper mapper = new ObjectMapper();
+                    user = mapper.readValue(userJson, Usuario.class);
+                    // Prueba el resultado
+                    System.out.println("Nombre: " + user.getNombre());
+                    System.out.println("Correo: " + user.getCorreo());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                setupMainScene();
+            } else {
+                System.err.println("Error al iniciar sesion: " + response.statusCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //
     }
 
     /**
