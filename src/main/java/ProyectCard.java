@@ -17,7 +17,7 @@ public class ProyectCard extends BorderPane {
     private int careersCount;
     private float budget;
     public ProyectCard(Consumer<String> onButtonClicked, int proyectID, String proyectName, String state, int participantsCount, int facultiesCount, int careersCount, float budget) {
-        this.setPrefSize(305,370);
+        this.setPrefHeight(370);
         this.proyectID = proyectID;
         this.proyectName = proyectName;
         this.state = state;

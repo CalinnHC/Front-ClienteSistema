@@ -187,7 +187,7 @@ public class GUI extends Application {
      * Main Scene Configuration.
      */
     private void  setupMainScene() {
-        contentMainPane = new GridPane(3,2);
+        contentMainPane = new GridPane();
         showProyects();
         mainRoot = new StackPane();
         mainRoot.setStyle("-fx-background-color: C1BBD6");
@@ -482,9 +482,11 @@ public class GUI extends Application {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    showProyects();
                     mainScene();
                 } else {
                     System.err.println("Error al crear el proyecto: " + response.statusCode());
+                    mainScene();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -502,6 +504,7 @@ public class GUI extends Application {
     }
 
     public void showProyects(){
+        contentMainPane.getChildren().clear();
         try {
             // Crear cliente HTTP
             HttpClient client = HttpClient.newHttpClient();
@@ -564,7 +567,6 @@ public class GUI extends Application {
 
     private void handleTarjetaClick(String id) {
         manageProyect();
-        System.out.println("Botón presionado en: " + id);
     }
 
     public static void main(String[] args) {
