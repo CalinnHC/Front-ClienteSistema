@@ -6,15 +6,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
+import java.util.function.Consumer;
+
 public class ProyectCard extends BorderPane {
+    private int proyectID;
     private String proyectName;
     private String state;
     private int participantsCount;
     private int facultiesCount;
     private int careersCount;
     private float budget;
-    public ProyectCard(String proyectName, String state, int participantsCount, int facultiesCount, int careersCount, float budget) {
+    public ProyectCard(Consumer<String> onButtonClicked, int proyectID, String proyectName, String state, int participantsCount, int facultiesCount, int careersCount, float budget) {
         this.setPrefSize(305,370);
+        this.proyectID = proyectID;
         this.proyectName = proyectName;
         this.state = state;
         this.participantsCount = participantsCount;
@@ -32,8 +36,8 @@ public class ProyectCard extends BorderPane {
         VBox cardDataR = new VBox();
         Label stateLabel = new Label("Estado");
         Label participantsLabel = new Label("Participantes");
-        Label facultiesLabel = new Label("Faculties");
-        Label careersLabel = new Label("Careers");
+        Label facultiesLabel = new Label("Facultades");
+        Label careersLabel = new Label("Carreras");
         Label budgetLabel = new Label("Presupuesto");
         Label stateLabelData = new Label(this.state);
         Label participantsLabelData = new Label(this.participantsCount + "");
@@ -50,6 +54,11 @@ public class ProyectCard extends BorderPane {
         cardData.setRight(cardDataR);
         this.setCenter(cardData);
         Button manageButton = new Button("Gestionar");
+        manageButton.setOnAction(event -> {
+            if (onButtonClicked != null) {
+                onButtonClicked.accept(this.proyectID + ""); // Notifica el evento al callback
+            }
+        });
         BorderPane.setAlignment(manageButton, Pos.CENTER);
         manageButton.setPrefSize(150,40);
         manageButton.getStyleClass().add("hover-button");

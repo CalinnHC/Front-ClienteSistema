@@ -1,5 +1,7 @@
 import Entity.Proyecto;
 import Entity.Usuario;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -18,6 +20,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GUI extends Application {
     private Scene loginScene;
@@ -36,6 +40,10 @@ public class GUI extends Application {
     private PasswordField passwordField;
     private Usuario user;
     private Label errorLabel;
+    private List<Proyecto> proyectos;
+    private GridPane contentMainPane;
+    private Proyecto proyecto;
+    private BorderPane proyectoPane;
 
     @Override
     public void start(Stage mainStage) {
@@ -179,7 +187,8 @@ public class GUI extends Application {
      * Main Scene Configuration.
      */
     private void  setupMainScene() {
-        GridPane contentMainPane = new GridPane(3,2);
+        contentMainPane = new GridPane(3,2);
+        showProyects();
         mainRoot = new StackPane();
         mainRoot.setStyle("-fx-background-color: C1BBD6");
         BorderPane mainPane = new BorderPane();
@@ -441,15 +450,15 @@ public class GUI extends Application {
 
                 // Serializar los datos del proyecto
                 String jsonData = "{" +
-                        "\"ID_Proyecto\": " + (proyectIDTF.getText() != null ? proyectIDTF.getText() : "null") + "," +
-                        "\"Ubicacion\": " + (locationTF.getText() != null ? locationTF.getText() : "null") + "," +
-                        "\"Nombre_de_la_Extension\": \"" + (proyectNameTF.getText() != null ? proyectNameTF.getText() : "") + "\"," +
-                        "\"Fecha_de_Inicio\": \"" + (startDate.getValue() != null ? startDate.getValue().toString() : "") + "\"," +
-                        "\"Fecha_Estimada_de_Finalizacion\": \"" + (startDate.getValue() != null ? startDate.getValue().toString() : "") + "\"," +
-                        "\"Coordinador\": " + (coordinatorTF.getText() != null ? coordinatorTF.getText() : "null") + "," +
-                        "\"Presupuesto\": " + (BudgetLabel.getText() != null ? BudgetLabel.getText() : "null") + "," +
-                        "\"Estado_Proyecto\": " + (1) + "," +
-                        "\"Comentarios\": \"" + (descriptionTF.getText() != null ? descriptionTF.getText() : "") + "\"" +
+                        "\"idProyecto\": " + (proyectIDTF.getText() != null ? proyectIDTF.getText() : "null") + "," +
+                        "\"ubicacion\": " + 1 + "," +
+                        "\"nombre_de_la_extension\": \"" + (proyectNameTF.getText() != null ? proyectNameTF.getText() : "") + "\"," +
+                        "\"fecha_De_Inicio\": \"" + (startDate.getValue() != null ? startDate.getValue().toString() : "") + "\"," +
+                        "\"fecha_Estimada_De_Finalizacion\": \"" + (startDate.getValue() != null ? startDate.getValue().toString() : "") + "\"," +
+                        "\"coordinador\": " + 27501354 + "," +
+                        "\"presupuesto\": " + (budgetTF.getText() != null ? budgetTF.getText() : "null") + "," +
+                        "\"estado_Proyecto\": " + (1) + "," +
+                        "\"comentarios\": \"" + (descriptionTF.getText() != null ? descriptionTF.getText() : "") + "\"" +
                         "}";
                 System.out.println(jsonData);
 
@@ -467,10 +476,9 @@ public class GUI extends Application {
                     try {
                         String projectJson = response.body();
                         ObjectMapper mapper = new ObjectMapper();
-                        Proyecto proyecto = mapper.readValue(projectJson, Proyecto.class);
-                        // Prueba el resultado
-                        System.out.println("Nombre del Proyecto: " + proyecto.getNombreDeLaExtension());
-                        System.out.println("Presupuesto: " + proyecto.getPresupuesto());
+                        mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+                        proyecto = mapper.readValue(projectJson, Proyecto.class);
+                        System.out.println(proyecto.toString());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -485,12 +493,80 @@ public class GUI extends Application {
         newProyectContainer.getChildren().addAll(proyectIDTF, proyectNameTF,coordinatorTF, startDateLabel, startDate, endDateLabel,endDate,locationTF,descriptionTF,BudgetLabel, budgetTF, newProyectButton);
         contentPane.setCenter(newProyectContainer);
     }
+
     public void clearContentPane(){
         contentPane.setCenter(null);
         if (dateAndFilterContianer.getChildren().size() > 1) {
             dateAndFilterContianer.getChildren().remove(1);
         }
     }
+
+    public void showProyects(){
+        try {
+            // Crear cliente HTTP
+            HttpClient client = HttpClient.newHttpClient();
+
+            // Crear la solicitud HTTP para obtener los proyectos
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8094/Proyectos")) // URL de la API
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
+
+            // Enviar la solicitud y manejar la respuesta
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                // Procesar la respuesta JSON
+                String jsonResponse = response.body();
+                System.out.println("Respuesta obtenida: " + jsonResponse);
+
+                // Mapear la respuesta a una lista de objetos Proyecto
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+                List<Proyecto> proyectos = mapper.readValue(jsonResponse, new TypeReference<List<Proyecto>>() {});
+
+                // Recorrer la lista de proyectos e imprimir los detalles
+                List<Button> proyectButtons = new ArrayList<>();
+
+                for (Proyecto proyecto : proyectos) {
+                    ProyectCard projectCard = new ProyectCard(
+                            this::handleTarjetaClick,
+                            proyecto.getIdProyecto(),
+                            proyecto.getNombre_de_la_extension(), // Nombre del proyecto
+                            proyecto.getEstado_Proyecto() + "", // Estado del proyecto
+                            proyecto.getIdProyecto(), // Número de participantes
+                            proyecto.getIdProyecto(), // Número de facultades
+                            proyecto.getIdProyecto(), // Número de carreras
+                            (float) proyecto.getPresupuesto() // Presupuesto (convertido a float si es necesario)
+                    );
+                    contentMainPane.add(projectCard,counterx,countery);
+                    counterx++;
+                    if (counterx == 3){
+                        counterx = 0;
+                        countery++;
+                    }
+                }
+            } else {
+                System.err.println("Error al obtener los proyectos: Código de estado " + response.statusCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void manageProyect(){
+        clearContentPane();
+        proyectoPane = new BorderPane();
+        proyectoPane.setCenter(new ProyectTab());
+        contentPane.setCenter(proyectoPane);
+    }
+
+    private void handleTarjetaClick(String id) {
+        manageProyect();
+        System.out.println("Botón presionado en: " + id);
+    }
+
     public static void main(String[] args) {
         launch(args);  // Inicia la aplicación JavaFX
     }
