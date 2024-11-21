@@ -1,3 +1,4 @@
+import Entity.Proyecto;
 import Entity.Usuario;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Application;
@@ -34,6 +35,7 @@ public class GUI extends Application {
     private TextField usernametextField;
     private PasswordField passwordField;
     private Usuario user;
+    private Label errorLabel;
 
     @Override
     public void start(Stage mainStage) {
@@ -51,10 +53,8 @@ public class GUI extends Application {
         mainStage.setWidth(1280);
         mainStage.setMinHeight(480);
         mainStage.setMinWidth(720);
-
         loginRoot = new StackPane();  // Inicializa el contenedor raíz
         setupLoginScene();
-
         mainStage.setScene(loginScene);
         mainStage.show();
     }
@@ -66,13 +66,15 @@ public class GUI extends Application {
         //Login Label Configuration
         Label loginLabel = new Label("INICIAR SESIÓN");
         loginLabel.setFont(Font.font("Open Sans", FontWeight.BOLD, 30));
-
+        errorLabel = new Label("Usuario o contraseña incorrectos");
+        errorLabel.setFont(Font.font("Open Sans", FontWeight.NORMAL, 10));
+        errorLabel.setStyle("-fx-text-fill: red;");
+        errorLabel.setVisible(false);
         //Username TextField Config
         usernametextField = new TextField();
         usernametextField.setPromptText("Username");
         usernametextField.setMinHeight(40);
         usernametextField.setStyle("-fx-background-color: FFFAFC; -fx-background-radius: 20;-fx-padding: 0 15 0 15;");
-
 
         //Password TextField Config
         passwordField = new PasswordField();
@@ -95,6 +97,7 @@ public class GUI extends Application {
         registerLabel.setFont(Font.font("Open Sans", FontWeight.NORMAL, 15));
         Label registerListenerLabel = new Label("Regístrate");
         registerListenerLabel.setFont(Font.font("Open Sans", FontWeight.BOLD, 15));
+        registerListenerLabel.setStyle("-fx-font-weight: bold;");
         registerListenerLabel.setTextFill(Color.BLUE);
         registerListenerLabel.setOnMouseEntered(event -> {
             registerListenerLabel.setFont(Font.font("Open Sans", FontWeight.BOLD, 16));
@@ -107,7 +110,7 @@ public class GUI extends Application {
         registerContainer.getChildren().addAll(registerLabel, registerListenerLabel);
         // Contenedor para los elementos del login
         VBox loginContainer = new VBox(30);  // Espacio de 10 píxeles entre elementos
-        loginContainer.getChildren().addAll(loginLabel, usernametextField, passwordField, loginButton, registerContainer);
+        loginContainer.getChildren().addAll(loginLabel,errorLabel, usernametextField, passwordField, loginButton, registerContainer);
         loginContainer.setAlignment(Pos.CENTER);
         loginContainer.setPadding(new Insets(50));  // Padding interno dentro de loginContainer
         loginContainer.setStyle("-fx-background-color: C1BBD6; -fx-background-radius: 32");
@@ -128,8 +131,6 @@ public class GUI extends Application {
     }
 
     private void loginFunction() {
-        usernametextField.getText();
-        passwordField.getText();
         try {
             // Crear cliente HTTP
             HttpClient client = HttpClient.newHttpClient();
@@ -165,6 +166,7 @@ public class GUI extends Application {
                 }
                 setupMainScene();
             } else {
+                errorLabel.setVisible(true);
                 System.err.println("Error al iniciar sesion: " + response.statusCode());
             }
         } catch (Exception e) {
@@ -176,7 +178,7 @@ public class GUI extends Application {
     /**
      * Main Scene Configuration.
      */
-    private void setupMainScene() {
+    private void  setupMainScene() {
         GridPane contentMainPane = new GridPane(3,2);
         mainRoot = new StackPane();
         mainRoot.setStyle("-fx-background-color: C1BBD6");
@@ -281,27 +283,21 @@ public class GUI extends Application {
         TextField searchTextField = new TextField();
         searchTextField.getStyleClass().add("search-textField");
         searchTextField.setPromptText("buscar...");
-        Button newActivityButton = new Button("Nuevo");
-        newActivityButton.setOnAction(event -> {
-            ProyectCard Proyecto1 = new ProyectCard("Extensión Chilibre", "Aprobado", 523,3,10,1000000);
-            contentMainPane.add(Proyecto1,counterx,countery);
-            counterx++;
-            if (counterx == 3){
-                counterx = 0;
-                countery++;
-            }
+        Button newProyectButton = new Button("Nuevo");
+        newProyectButton.setOnAction(event -> {
+            userProyets();
         });
-        newActivityButton.getStyleClass().add("hover-button");
-        newActivityButton.setMinWidth(150);
-        newActivityButton.setMaxHeight(20);
+        newProyectButton.getStyleClass().add("hover-button");
+        newProyectButton.setMinWidth(150);
+        newProyectButton.setMaxHeight(20);
         filterContainer.setMaxHeight(60);
         filterContainer.setMinHeight(60);
         filterContainer.getChildren().addAll(filterButton, searchImageView, searchTextField);
         filterPane.setLeft(filterContainer);
-        filterPane.setRight(newActivityButton);
+        filterPane.setRight(newProyectButton);
         filterPane.setStyle("-fx-padding: 0 10 0 0;");
         BorderPane.setAlignment(filterContainer, Pos.CENTER);
-        BorderPane.setAlignment(newActivityButton, Pos.CENTER);
+        BorderPane.setAlignment(newProyectButton, Pos.CENTER);
         dateAndFilterContianer.getChildren().addAll(filterPane);
         dateAndFilterContianer.setMinHeight(60);
         dateAndFilterContianer.setStyle("-fx-background-color: FFFAFC;");
@@ -336,11 +332,7 @@ public class GUI extends Application {
      * Modify the main Scene to show the User Configuration.
      */
     private void userScene(){
-        contentPane.setCenter(null);
-        System.out.println(dateAndFilterContianer.getChildren().size());
-        if (dateAndFilterContianer.getChildren().size() > 1) {
-            dateAndFilterContianer.getChildren().remove(1);
-        }
+        clearContentPane();
         BorderPane userBackPane = new BorderPane();
         BorderPane userPane = new BorderPane();
         VBox userPaneLeft = new VBox(10);
@@ -350,16 +342,22 @@ public class GUI extends Application {
         Label usernameLabel = new Label("Nombre de Usuario");
         usernameLabel.setFont(Font.font("Open Sans", FontWeight.NORMAL, 15));
         TextField usernameTextField = new TextField();
+        usernameTextField.setText(user.getNombreUsuario());
+        usernameTextField.setEditable(false);
         usernameTextField.getStyleClass().add("search-textField");
         usernameTextField.setPromptText("Username");
         Label mailLabel = new Label("Correo Electrónico");
         mailLabel.setFont(Font.font("Open Sans", FontWeight.NORMAL, 15));
         TextField mailTextField = new TextField();
+        mailTextField.setText(user.getCorreo());
+        mailTextField.setEditable(false);
         mailTextField.getStyleClass().add("search-textField");
         mailTextField.setPromptText("Correo");
         Label phoneNumberLabel = new Label("Número de Teléfono");
         phoneNumberLabel.setFont(Font.font("Open Sans", FontWeight.NORMAL, 15));
         TextField numberTextField = new TextField();
+        numberTextField.setText(user.getNumeroTelefonico() + "");
+        numberTextField.setEditable(false);
         numberTextField.getStyleClass().add("search-textField");
         numberTextField.setPromptText("Número");
         Button changePasswordButton = new Button("Cambiar Contraseña");
@@ -380,10 +378,7 @@ public class GUI extends Application {
     }
 
     private void taskScene(){
-        contentPane.setCenter(null);
-        if (dateAndFilterContianer.getChildren().size() > 1) {
-            dateAndFilterContianer.getChildren().remove(1);
-        }
+        clearContentPane();
         BorderPane tasksBackPane = new BorderPane();
         VBox taskPane = new VBox(10);
         //Data from the TextFields and Labels
@@ -399,10 +394,7 @@ public class GUI extends Application {
     }
 
     private void notificationsScene(){
-        contentPane.setCenter(null);
-        if (dateAndFilterContianer.getChildren().size() > 1) {
-            dateAndFilterContianer.getChildren().remove(1);
-        }
+        clearContentPane();
         BorderPane notificationsBackPane = new BorderPane();
         VBox notificationsPane = new VBox(10);
         //Data from the TextFields and Labels
@@ -422,6 +414,83 @@ public class GUI extends Application {
         registrationWindow.show();
     }
 
+    private void userProyets(){
+        clearContentPane();
+        VBox newProyectContainer = new VBox(10);
+        TextField proyectIDTF = new TextField();
+        proyectIDTF.setPromptText("ID del Proyecto");
+        TextField proyectNameTF = new TextField();
+        proyectNameTF.setPromptText("Nombre del Proyecto");
+        TextField coordinatorTF = new TextField();
+        coordinatorTF.setPromptText("Coordinador Asignado");
+        Label startDateLabel = new Label("Fecha de Inicio");
+        DatePicker startDate = new DatePicker();
+        Label endDateLabel = new Label("Fecha de Finalización");
+        DatePicker endDate = new DatePicker();
+        TextField locationTF = new TextField();
+        locationTF.setPromptText("Ubicación");
+        TextField descriptionTF = new TextField();
+        descriptionTF.setPromptText("Descripcion");
+        Label BudgetLabel = new Label("Presupuesto Inicial");
+        TextField budgetTF = new TextField();
+        Button newProyectButton = new Button("Registrar");
+        newProyectButton.setOnAction(event -> {
+            try {
+                // Crear cliente HTTP
+                HttpClient client = HttpClient.newHttpClient();
+
+                // Serializar los datos del proyecto
+                String jsonData = "{" +
+                        "\"ID_Proyecto\": " + (proyectIDTF.getText() != null ? proyectIDTF.getText() : "null") + "," +
+                        "\"Ubicacion\": " + (locationTF.getText() != null ? locationTF.getText() : "null") + "," +
+                        "\"Nombre_de_la_Extension\": \"" + (proyectNameTF.getText() != null ? proyectNameTF.getText() : "") + "\"," +
+                        "\"Fecha_de_Inicio\": \"" + (startDate.getValue() != null ? startDate.getValue().toString() : "") + "\"," +
+                        "\"Fecha_Estimada_de_Finalizacion\": \"" + (startDate.getValue() != null ? startDate.getValue().toString() : "") + "\"," +
+                        "\"Coordinador\": " + (coordinatorTF.getText() != null ? coordinatorTF.getText() : "null") + "," +
+                        "\"Presupuesto\": " + (BudgetLabel.getText() != null ? BudgetLabel.getText() : "null") + "," +
+                        "\"Estado_Proyecto\": " + (1) + "," +
+                        "\"Comentarios\": \"" + (descriptionTF.getText() != null ? descriptionTF.getText() : "") + "\"" +
+                        "}";
+                System.out.println(jsonData);
+
+                // Crear la solicitud HTTP
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI("http://localhost:8094/addProyecto")) // Cambia esta URL
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(jsonData, StandardCharsets.UTF_8))
+                        .build();
+
+                // Enviar la solicitud y manejar la respuesta
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                if (response.statusCode() == 200 || response.statusCode() == 201) { // 201 para creación exitosa
+                    System.out.println("Proyecto creado exitosamente: " + response.body());
+                    try {
+                        String projectJson = response.body();
+                        ObjectMapper mapper = new ObjectMapper();
+                        Proyecto proyecto = mapper.readValue(projectJson, Proyecto.class);
+                        // Prueba el resultado
+                        System.out.println("Nombre del Proyecto: " + proyecto.getNombreDeLaExtension());
+                        System.out.println("Presupuesto: " + proyecto.getPresupuesto());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    mainScene();
+                } else {
+                    System.err.println("Error al crear el proyecto: " + response.statusCode());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        newProyectContainer.getChildren().addAll(proyectIDTF, proyectNameTF,coordinatorTF, startDateLabel, startDate, endDateLabel,endDate,locationTF,descriptionTF,BudgetLabel, budgetTF, newProyectButton);
+        contentPane.setCenter(newProyectContainer);
+    }
+    public void clearContentPane(){
+        contentPane.setCenter(null);
+        if (dateAndFilterContianer.getChildren().size() > 1) {
+            dateAndFilterContianer.getChildren().remove(1);
+        }
+    }
     public static void main(String[] args) {
         launch(args);  // Inicia la aplicación JavaFX
     }
