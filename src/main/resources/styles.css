@@ -45,6 +45,12 @@
     -fx-background-radius: 32;
     -fx-padding: 20;
 }
+.extensionCard-panel{
+    -fx-background-color: FFFAFC;
+    -fx-border-radius: 32;
+    -fx-background-radius: 32;
+    -fx-padding: 10;
+}
 .cardData-panel{
     -fx-padding: 20;
     -fx-border-width: 1 0 0 0;

@@ -1,8 +1,11 @@
+import Entity.Extension;
 import Entity.Proyecto;
 import Entity.Usuario;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.tools.javac.Main;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,11 +18,17 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +51,7 @@ public class GUI extends Application {
     private Label errorLabel;
     private List<Proyecto> proyectos;
     private GridPane contentMainPane;
+    private VBox extensionsMainPane = new VBox(10);
     private Proyecto proyecto;
     private BorderPane proyectoPane;
 
@@ -188,7 +198,6 @@ public class GUI extends Application {
      */
     private void  setupMainScene() {
         contentMainPane = new GridPane();
-        showProyects();
         mainRoot = new StackPane();
         mainRoot.setStyle("-fx-background-color: C1BBD6");
         BorderPane mainPane = new BorderPane();
@@ -208,7 +217,7 @@ public class GUI extends Application {
         Button homeButton = new Button("Inicio", imageViewHome);
         homeButton.getStyleClass().add("toolBar-button");
         homeButton.setOnAction(event -> {
-            mainScene();
+            showExtensions();
         });
 
         //Formato del boton de NotificacionesK
@@ -328,6 +337,8 @@ public class GUI extends Application {
         mainScene = new Scene(mainRoot, 1280, 720);
         mainScene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         mainStage.setScene(mainScene); // Cambiar a la nueva escena principal
+
+        showExtensions();
     }
 
     private void mainScene() {
@@ -478,11 +489,9 @@ public class GUI extends Application {
                         ObjectMapper mapper = new ObjectMapper();
                         mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
                         proyecto = mapper.readValue(projectJson, Proyecto.class);
-                        System.out.println(proyecto.toString());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    showProyects();
                     mainScene();
                 } else {
                     System.err.println("Error al crear el proyecto: " + response.statusCode());
@@ -503,8 +512,9 @@ public class GUI extends Application {
         }
     }
 
-    public void showProyects(){
+    public void showProyects(int id){
         contentMainPane.getChildren().clear();
+        /*
         try {
             // Crear cliente HTTP
             HttpClient client = HttpClient.newHttpClient();
@@ -515,7 +525,6 @@ public class GUI extends Application {
                     .header("Content-Type", "application/json")
                     .GET()
                     .build();
-
             // Enviar la solicitud y manejar la respuesta
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -531,23 +540,24 @@ public class GUI extends Application {
 
                 // Recorrer la lista de proyectos e imprimir los detalles
                 List<Button> proyectButtons = new ArrayList<>();
-
                 for (Proyecto proyecto : proyectos) {
-                    ProyectCard projectCard = new ProyectCard(
-                            this::handleTarjetaClick,
-                            proyecto.getIdProyecto(),
-                            proyecto.getNombre_de_la_extension(), // Nombre del proyecto
-                            proyecto.getEstado_Proyecto() + "", // Estado del proyecto
-                            proyecto.getIdProyecto(), // Número de participantes
-                            proyecto.getIdProyecto(), // Número de facultades
-                            proyecto.getIdProyecto(), // Número de carreras
-                            (float) proyecto.getPresupuesto() // Presupuesto (convertido a float si es necesario)
-                    );
-                    contentMainPane.add(projectCard,counterx,countery);
-                    counterx++;
-                    if (counterx == 3){
-                        counterx = 0;
-                        countery++;
+                    if(proyecto.getIdExtension() == id){
+                        ProyectCard projectCard = new ProyectCard(
+                                this::handleTarjetaClick,
+                                proyecto.getIdProyecto(),
+                                proyecto.getNombre_de_la_extension(), // Nombre del proyecto
+                                proyecto.getEstado_Proyecto() + "", // Estado del proyecto
+                                proyecto.getIdProyecto(), // Número de participantes
+                                proyecto.getIdProyecto(), // Número de facultades
+                                proyecto.getIdProyecto(), // Número de carreras
+                                (float) proyecto.getPresupuesto() // Presupuesto (convertido a float si es necesario)
+                        );
+                        contentMainPane.add(projectCard,counterx,countery);
+                        counterx++;
+                        if (counterx == 3){
+                            counterx = 0;
+                            countery++;
+                        }
                     }
                 }
             } else {
@@ -555,7 +565,123 @@ public class GUI extends Application {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }*/
+        try (InputStream inputStream = Main.class.getClassLoader().getResourceAsStream("proyects.json")) {
+            if (inputStream == null) {
+                throw new RuntimeException("Archivo JSON no encontrado");
+            }
+            else{
+                // Mapear la respuesta a una lista de objetos Proyecto
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+                List<Proyecto> proyectos = mapper.readValue(inputStream, new TypeReference<List<Proyecto>>() {});
+
+                // Recorrer la lista de proyectos e imprimir los detalles
+                List<Button> proyectButtons = new ArrayList<>();
+                for (Proyecto proyecto : proyectos) {
+                    if(proyecto.getIdExtension() == id){
+                        ProyectCard projectCard = new ProyectCard(
+                                this::handleTarjetaClick,
+                                proyecto.getIdProyecto(),
+                                proyecto.getNombre_de_la_extension(), // Nombre del proyecto
+                                proyecto.getEstado_Proyecto() + "", // Estado del proyecto
+                                proyecto.getIdProyecto(), // Número de participantes
+                                proyecto.getIdProyecto(), // Número de facultades
+                                proyecto.getIdProyecto(), // Número de carreras
+                                (float) proyecto.getPresupuesto() // Presupuesto (convertido a float si es necesario)
+                        );
+                        contentMainPane.add(projectCard,counterx,countery);
+                        counterx++;
+                        if (counterx == 3){
+                            counterx = 0;
+                            countery++;
+                        }
+                    }
+                }
+                scrollMainPane.setContent(null);
+                scrollMainPane.setContent(contentMainPane);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+    }
+
+    public void showExtensions() {
+        clearContentPane();
+        scrollMainPane = new ScrollPane();
+        /*
+        try {
+            // Crear cliente HTTP
+            HttpClient client = HttpClient.newHttpClient();
+
+            // Crear la solicitud HTTP para obtener los proyectos
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8094/Extensiones")) // URL de la API
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
+            // Enviar la solicitud y manejar la respuesta
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                // Procesar la respuesta JSON
+                String jsonResponse = response.body();
+                System.out.println("Respuesta obtenida: " + jsonResponse);
+
+                // Mapear la respuesta a una lista de objetos Proyecto
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+                List<Extension> extensiones = mapper.readValue(jsonResponse, new TypeReference<List<Extension>>() {});
+
+                // Recorrer la lista de proyectos e imprimir los detalles
+                List<Button> proyectButtons = new ArrayList<>();
+
+                for (Extension extension : extensiones) {
+                    ExtensionCard extensionCard = new ExtensionCard(
+                            this::handleTarjetaClick,
+                            extension.getNombre_de_la_extension(),
+                            extension.getIdExtension()
+                    );
+                    extensionsMainPane.getChildren().add(extensionCard);
+                }
+            } else {
+                System.err.println("Error al obtener los proyectos: Código de estado " + response.statusCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+        try (InputStream inputStream = Main.class.getClassLoader().getResourceAsStream("extensions.json")) {
+            if (inputStream == null) {
+                throw new RuntimeException("Archivo JSON no encontrado");
+            }
+            else{
+                System.out.println(inputStream);
+                // Mapear la respuesta a una lista de objetos Proyecto
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+                List<Extension> extensiones = mapper.readValue(inputStream, new TypeReference<List<Extension>>() {});
+
+                // Recorrer la lista de proyectos e imprimir los detalles
+                List<Button> proyectButtons = new ArrayList<>();
+
+                for (Extension extension : extensiones) {
+                    ExtensionCard extensionCard = new ExtensionCard(
+                            this::handleExtensionCard,
+                            extension.getNombre_de_la_extension(),
+                            extension.getIdExtension()
+                    );
+                    extensionsMainPane.getChildren().add(extensionCard);
+                }
+                scrollMainPane.setContent(extensionsMainPane);
+                contentPane.setCenter(scrollMainPane);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        extensionsMainPane.setStyle("-fx-padding: 10");
+        scrollMainPane.setFitToWidth(true);
+
     }
 
     public void manageProyect(){
@@ -567,6 +693,16 @@ public class GUI extends Application {
 
     private void handleTarjetaClick(String id) {
         manageProyect();
+    }
+
+    private void handleExtensionCard(String id) {
+        showSearchPanel();
+        System.out.println(1);
+        showProyects(Integer.parseInt(id));
+    }
+
+    private void showSearchPanel(){
+        dateAndFilterContianer.getChildren().add(filterPane);
     }
 
     public static void main(String[] args) {

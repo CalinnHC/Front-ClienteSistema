@@ -3,6 +3,7 @@ package Entity;
 public class Proyecto {
     private int idProyecto;
     private int ubicacion;
+    private int idExtension;
     private String nombre_de_la_extension;
     private String fecha_De_Inicio; // Usamos String para compatibilidad con JSON, puede cambiarse a LocalDate
     private String fecha_Estimada_De_Finalizacion;
@@ -15,7 +16,7 @@ public class Proyecto {
     public Proyecto() {
     }
 
-    public Proyecto(int idProyecto, int ubicacion, String nombre_de_la_extension, String fecha_De_Inicio, String fecha_Estimada_de_Finalizacion, int coordinador, double presupuesto, int estado_Proyecto, String comentarios) {
+    public Proyecto(int idProyecto, int ubicacion, String nombre_de_la_extension, String fecha_De_Inicio, String fecha_Estimada_de_Finalizacion, int coordinador, double presupuesto, int estado_Proyecto, String comentarios, int idExtension) {
         this.idProyecto = idProyecto;
         this.ubicacion = ubicacion;
         this.nombre_de_la_extension = nombre_de_la_extension;
@@ -25,6 +26,7 @@ public class Proyecto {
         this.presupuesto = presupuesto;
         this.estado_Proyecto = estado_Proyecto;
         this.comentarios = comentarios;
+        this.idExtension = idExtension;
     }
 
     public int getIdProyecto() {
@@ -99,14 +101,31 @@ public class Proyecto {
         this.comentarios = comentarios;
     }
 
+    public int getIdExtension() {
+        return idExtension;
+    }
+
+    public void setIdExtension(int idExtension) {
+        this.idExtension = idExtension;
+    }
+
+    public String getFecha_Estimada_De_Finalizacion() {
+        return fecha_Estimada_De_Finalizacion;
+    }
+
+    public void setFecha_Estimada_De_Finalizacion(String fecha_Estimada_De_Finalizacion) {
+        this.fecha_Estimada_De_Finalizacion = fecha_Estimada_De_Finalizacion;
+    }
+
     @Override
     public String toString() {
         return "Proyecto{" +
                 "idProyecto=" + idProyecto +
                 ", ubicacion=" + ubicacion +
+                ", idExtension=" + idExtension +
                 ", nombre_de_la_extension='" + nombre_de_la_extension + '\'' +
                 ", fecha_De_Inicio='" + fecha_De_Inicio + '\'' +
-                ", fecha_Estimada_de_Finalizacion='" + fecha_Estimada_De_Finalizacion + '\'' +
+                ", fecha_Estimada_De_Finalizacion='" + fecha_Estimada_De_Finalizacion + '\'' +
                 ", coordinador=" + coordinador +
                 ", presupuesto=" + presupuesto +
                 ", estado_Proyecto=" + estado_Proyecto +
