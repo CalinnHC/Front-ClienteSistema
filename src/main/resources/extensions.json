@@ -1,0 +1,78 @@
+[
+  {
+    "idExtension": 1,
+    "nombre_de_la_extension": "Extensión Universitaria de Colón"
+  },
+  {
+    "idExtension": 2,
+    "nombre_de_la_extension": "Extensión Universitaria de Azuero"
+  },
+  {
+    "idExtension": 3,
+    "nombre_de_la_extension": "Extensión Universitaria de Chiriquí"
+  },
+  {
+    "idExtension": 4,
+    "nombre_de_la_extension": "Extensión Universitaria de Veraguas"
+  },
+  {
+    "idExtension": 5,
+    "nombre_de_la_extension": "Extensión Universitaria de Coclé"
+  },
+  {
+    "idExtension": 6,
+    "nombre_de_la_extension": "Extensión Universitaria de Darién"
+  },
+  {
+    "idExtension": 7,
+    "nombre_de_la_extension": "Extensión Universitaria de Bocas del Toro"
+  },
+  {
+    "idExtension": 8,
+    "nombre_de_la_extension": "Extensión Universitaria de Panamá Oeste"
+  },
+  {
+    "idExtension": 9,
+    "nombre_de_la_extension": "Extensión Universitaria de Herrera"
+  },
+  {
+    "idExtension": 10,
+    "nombre_de_la_extension": "Extensión Universitaria de Los Santos"
+  },
+  {
+    "idExtension": 11,
+    "nombre_de_la_extension": "Extensión Universitaria de Panamá Metro"
+  },
+  {
+    "idExtension": 12,
+    "nombre_de_la_extension": "Extensión Universitaria de Veraguas Centro"
+  },
+  {
+    "idExtension": 13,
+    "nombre_de_la_extension": "Extensión Universitaria de Comarca Ngäbe-Buglé"
+  },
+  {
+    "idExtension": 14,
+    "nombre_de_la_extension": "Extensión Universitaria de Chiriquí Norte"
+  },
+  {
+    "idExtension": 15,
+    "nombre_de_la_extension": "Extensión Universitaria de Coclé Oeste"
+  },
+  {
+    "idExtension": 16,
+    "nombre_de_la_extension": "Extensión Universitaria de Colón Puerto"
+  },
+  {
+    "idExtension": 17,
+    "nombre_de_la_extension": "Extensión Universitaria de Panamá Este"
+  },
+  {
+    "idExtension": 18,
+    "nombre_de_la_extension": "Extensión Universitaria de Bocas del Toro Oeste"
+  },
+  {
+    "idExtension": 19,
+    "nombre_de_la_extension": "Extensión Universitaria de Herrera Oeste"
+  }
+]

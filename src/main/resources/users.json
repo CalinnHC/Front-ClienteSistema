@@ -1,0 +1,38 @@
+[
+    {
+      "idUsuario": 1,
+      "nombreUsuario": "jdoe",
+      "idRol": 2,
+      "correo": "jdoe@example.com",
+      "nombre": "John",
+      "apellido": "Doe",
+      "contrasena": "password123",
+      "numeroTelefonico": 1234567890,
+      "nacimiento": "1990-05-15",
+      "ultimoInicioDeSesion": "2024-11-27T09:45:00"
+    },
+    {
+      "idUsuario": 2,
+      "nombreUsuario": "asmith",
+      "idRol": 3,
+      "correo": "asmith@example.com",
+      "nombre": "Alice",
+      "apellido": "Smith",
+      "contrasena": "securepass456",
+      "numeroTelefonico": 9876543210,
+      "nacimiento": "1985-08-22",
+      "ultimoInicioDeSesion": "2024-11-26T14:30:00"
+    },
+    {
+      "idUsuario": 3,
+      "nombreUsuario": "bwilliams",
+      "idRol": 1,
+      "correo": "bwilliams@example.com",
+      "nombre": "Bob",
+      "apellido": "Williams",
+      "contrasena": "mypassword789",
+      "numeroTelefonico": 1122334455,
+      "nacimiento": "1992-12-01",
+      "ultimoInicioDeSesion": "2024-11-28T08:00:00"
+    }
+]

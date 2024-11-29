@@ -1,0 +1,62 @@
+[
+  {
+    "idProyecto": 1,
+    "ubicacion": 101,
+    "idExtension": 1,
+    "nombre_de_la_extension": "Extensión Universitaria de Colón",
+    "fecha_De_Inicio": "2024-01-15",
+    "fecha_Estimada_De_Finalizacion": "2024-12-15",
+    "coordinador": 3,
+    "presupuesto": 50000.00,
+    "estado_Proyecto": 1,
+    "comentarios": "Proyecto en marcha, se han realizado reuniones iniciales."
+  },
+  {
+    "idProyecto": 2,
+    "ubicacion": 102,
+    "idExtension": 2,
+    "nombre_de_la_extension": "Extensión Universitaria de Azuero",
+    "fecha_De_Inicio": "2024-02-01",
+    "fecha_Estimada_De_Finalizacion": "2024-11-30",
+    "coordinador": 4,
+    "presupuesto": 45000.00,
+    "estado_Proyecto": 2,
+    "comentarios": "Fase de planificación, contrataciones en proceso."
+  },
+  {
+    "idProyecto": 3,
+    "ubicacion": 103,
+    "idExtension": 3,
+    "nombre_de_la_extension": "Extensión Universitaria de Chiriquí",
+    "fecha_De_Inicio": "2024-03-05",
+    "fecha_Estimada_De_Finalizacion": "2025-03-05",
+    "coordinador": 5,
+    "presupuesto": 75000.00,
+    "estado_Proyecto": 3,
+    "comentarios": "Proyecto aprobado, esperando inicio de actividades."
+  },
+  {
+    "idProyecto": 4,
+    "ubicacion": 104,
+    "idExtension": 4,
+    "nombre_de_la_extension": "Extensión Universitaria de Veraguas",
+    "fecha_De_Inicio": "2024-04-10",
+    "fecha_Estimada_De_Finalizacion": "2025-04-10",
+    "coordinador": 2,
+    "presupuesto": 60000.00,
+    "estado_Proyecto": 2,
+    "comentarios": "En fase de diseño, la planificación está casi lista."
+  },
+  {
+    "idProyecto": 5,
+    "ubicacion": 105,
+    "idExtension": 5,
+    "nombre_de_la_extension": "Extensión Universitaria de Coclé",
+    "fecha_De_Inicio": "2024-05-20",
+    "fecha_Estimada_De_Finalizacion": "2024-11-20",
+    "coordinador": 1,
+    "presupuesto": 40000.00,
+    "estado_Proyecto": 1,
+    "comentarios": "Revisión de recursos en proceso."
+  }
+]

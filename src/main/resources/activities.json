@@ -1,0 +1,46 @@
+[
+  {
+    "idActividad": 1,
+    "proyecto_Asociado": 1,
+    "nombre": "Planificación del Proyecto",
+    "descripcion": "Actividad inicial para planificar todos los detalles del proyecto.",
+    "usuario_Asignado": 27501354,
+    "progreso": 50.5,
+    "estado": 1,
+    "fecha_de_inicio": "2024-11-01",
+    "fecha_de_finalizacion": "2024-11-15"
+  },
+  {
+    "idActividad": 2,
+    "proyecto_Asociado": 1,
+    "nombre": "Desarrollo del Producto",
+    "descripcion": "Desarrollo y diseño del prototipo del producto.",
+    "usuario_Asignado": 27501354,
+    "progreso": 25.0,
+    "estado": 2,
+    "fecha_de_inicio": "2024-11-16",
+    "fecha_de_finalizacion": "2024-12-15"
+  },
+  {
+    "idActividad": 3,
+    "proyecto_Asociado": 1,
+    "nombre": "Investigación de Mercado",
+    "descripcion": "Estudio del mercado y análisis de competencia.",
+    "usuario_Asignado": 27501354,
+    "progreso": 70.0,
+    "estado": 3,
+    "fecha_de_inicio": "2024-11-05",
+    "fecha_de_finalizacion": "2024-11-25"
+  },
+  {
+    "idActividad": 4,
+    "proyecto_Asociado": 1,
+    "nombre": "Pruebas de Calidad",
+    "descripcion": "Realización de pruebas de calidad sobre el producto final.",
+    "usuario_Asignado": 27501354,
+    "progreso": 40.0,
+    "estado": 2,
+    "fecha_de_inicio": "2024-11-10",
+    "fecha_de_finalizacion": "2024-11-30"
+  }
+]
