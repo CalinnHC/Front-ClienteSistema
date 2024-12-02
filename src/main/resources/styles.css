@@ -3,13 +3,16 @@
     -fx-transition: background-color 1s ease;
     -fx-text-fill: black;           /* Color del texto */
     -fx-padding: 5;
-    -fx-font-size: 18px;            /* Tamaño de la fuente */
+    -fx-font-size: 16px;            /* Tamaño de la fuente */
     -fx-background-radius: 32;      /* Bordes redondeados */
+    -fx-font-weight: Bold;
 }
 
 .hover-button:hover {
     -fx-background-color: #FFD700; /* Color de fondo al hacer hover */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 0); /* Sombra al hacer hover */
+    -fx-font-size: 16px;
+    -fx-font-weight: Bold;
 }
 .toolBar-button {
     -fx-background-color: rgba(244, 225, 0, 0); /* Color de fondo inicial */
@@ -22,6 +25,85 @@
 .date-label{
     -fx-font-family: "Open Sans";
     -fx-font-size: 20;
+}
+.activitiesDLabel{
+    -fx-background-color: #B8E4E5;
+    -fx-padding: 0 0 0 5;
+    -fx-font-family: "Open Sans";
+    -fx-font-size: 14;
+}
+.activitiesULabel{
+    -fx-background-color: #FFBD59;
+    -fx-font-family: "Open Sans";
+    -fx-alignment: center;
+    -fx-font-size: 14;
+}
+.activitiesSLabel{
+    -fx-background-color: #7ED957;
+    -fx-font-family: "Open Sans";
+    -fx-alignment: center;
+    -fx-font-size: 14;
+}
+.activitiesPLabel{
+    -fx-background-color: #5E17EB;
+    -fx-font-family: "Open Sans";
+    -fx-alignment: center;
+    -fx-font-size: 16;
+}
+.activitiesDLabel2{
+    -fx-background-color: rgba(184, 228, 229, 0.5);
+    -fx-padding: 0 0 0 5;
+    -fx-font-family: "Open Sans";
+    -fx-font-size: 14;
+}
+.activitiesULabel2{
+    -fx-background-color: rgba(255, 189, 89, 0.5);
+    -fx-font-family: "Open Sans";
+    -fx-alignment: center;
+    -fx-font-size: 14;
+}
+.activitiesSLabel2{
+    -fx-background-color: rgba(126, 217, 87, 0.5);
+    -fx-font-family: "Open Sans";
+    -fx-alignment: center;
+    -fx-font-size: 14;
+}
+.activitiesPLabel2{
+    -fx-background-color: rgba(94, 23, 235, 0.5);
+    -fx-font-family: "Open Sans";
+    -fx-alignment: center;
+    -fx-font-size: 16;
+}
+.activitiesPLabel2 .track {
+    -fx-background-color: EBF146; /* Fondo del track (parte sin progreso) */
+    -fx-background-radius: 10px; /* Bordes redondeados */
+}
+
+.activitiesPLabel2 .bar {
+    -fx-background-color: BBDCA7; /* Color del progreso */
+    -fx-background-radius: 10px; /* Bordes redondeados */
+}
+.activitiesPLabel .track {
+    -fx-background-color: EBF146; /* Fondo del track (parte sin progreso) */
+    -fx-background-radius: 10px; /* Bordes redondeados */
+}
+
+.activitiesPLabel .bar {
+    -fx-background-color: BBDCA7; /* Color del progreso */
+    -fx-background-radius: 10px; /* Bordes redondeados */
+}
+.title-label{
+    -fx-font-family: "Open Sans";
+    -fx-font-size: 20;
+    -fx-font-weight: bold;
+    -fx-padding: 10;
+}
+.title-label2{
+    -fx-font-family: "Open Sans";
+    -fx-font-size: 15;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+
 }
 .search-textField{
     -fx-border-color: black;
@@ -43,7 +125,6 @@
     -fx-background-color: FFFAFC;
     -fx-border-radius: 32;
     -fx-background-radius: 32;
-    -fx-padding: 20;
 }
 .extensionCard-panel{
     -fx-background-color: FFFAFC;
@@ -54,11 +135,11 @@
 .cardData-panel{
     -fx-padding: 20;
     -fx-border-width: 1 0 0 0;
-    -fx-border-color: C1BBD6;
-    -fx-font-size: 20;
+    -fx-border-color: #C1BBD6;
+    -fx-font-size: 16;
 }
 .user-panel{
-    -fx-background-color: FFFAFC;
+    -fx-background-color: #FFFAFC;
     -fx-border-radius: 32;
     -fx-background-radius: 32;
     -fx-padding: 20;

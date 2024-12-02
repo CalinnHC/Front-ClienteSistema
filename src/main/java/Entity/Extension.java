@@ -2,7 +2,7 @@ package Entity;
 
 public class Extension {
     private int idExtension;
-    private String nombre_de_la_extension;
+    private String nombre_Extension;
 
     public int getIdExtension() {
         return idExtension;
@@ -12,19 +12,19 @@ public class Extension {
         this.idExtension = idExtension;
     }
 
-    public String getNombre_de_la_extension() {
-        return nombre_de_la_extension;
+    public String getNombre_Extension() {
+        return nombre_Extension;
     }
 
-    public void setNombre_de_la_extension(String nombre_de_la_extension) {
-        this.nombre_de_la_extension = nombre_de_la_extension;
+    public void setNombre_Extension(String nombre_Extension) {
+        this.nombre_Extension = nombre_Extension;
     }
 
     @Override
     public String toString() {
         return "Extension{" +
                 "idExtension=" + idExtension +
-                ", nombre_de_la_extension='" + nombre_de_la_extension + '\'' +
+                ", nombre_Extension='" + nombre_Extension + '\'' +
                 '}';
     }
 }

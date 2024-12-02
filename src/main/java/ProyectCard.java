@@ -13,16 +13,16 @@ public class ProyectCard extends BorderPane {
     private String proyectName;
     private String state;
     private int participantsCount;
-    private int facultiesCount;
+    private String proyectType;
     private int careersCount;
     private float budget;
-    public ProyectCard(Consumer<String> onButtonClicked, int proyectID, String proyectName, String state, int participantsCount, int facultiesCount, int careersCount, float budget) {
+    public ProyectCard(Consumer<String> onButtonClicked, int proyectID, String proyectName, String state, int participantsCount, int proyectType, int careersCount, float budget) {
         this.setPrefSize(305,370);
         this.proyectID = proyectID;
         this.proyectName = proyectName;
         this.state = state;
         this.participantsCount = participantsCount;
-        this.facultiesCount = facultiesCount;
+        this.proyectType = proyectTypeToString(proyectType);
         this.careersCount = careersCount;
         this.budget = budget;
 
@@ -36,20 +36,21 @@ public class ProyectCard extends BorderPane {
         VBox cardDataR = new VBox();
         Label stateLabel = new Label("Estado");
         Label participantsLabel = new Label("Participantes");
-        Label facultiesLabel = new Label("Facultades");
-        Label careersLabel = new Label("Carreras");
+        Label proyectTypeLabel = new Label("Tipo de Proyecto");
+        Label activitiesLabel = new Label("Actividades");
         Label budgetLabel = new Label("Presupuesto");
-        Label stateLabelData = new Label(this.state);
-        Label participantsLabelData = new Label(this.participantsCount + "");
-        Label facultiesLabelData = new Label(this.facultiesCount + "");
-        Label careersLabelData = new Label(this.careersCount + "");
+        Label stateLabelData = new Label(estadoToString(Integer.parseInt(this.state)));
+        Label participantsLabelData = new Label("???");
+        Label projectTypeLabelData = new Label(this.proyectType);
+        Label activitiesLabelData = new Label("???");
         Label budgetLabelData = new Label(this.budget + "");
-        cardDataL.getChildren().addAll(stateLabel,participantsLabel, facultiesLabel, careersLabel, budgetLabel);
+        cardDataL.getChildren().addAll(stateLabel,participantsLabel, proyectTypeLabel, activitiesLabel, budgetLabel);
         cardDataL.setSpacing(25);
         cardDataR.setSpacing(25);
         cardDataR.setAlignment(Pos.CENTER_RIGHT);
+        cardDataL.setAlignment(Pos.CENTER_LEFT);
         cardData.getStyleClass().add("cardData-panel");
-        cardDataR.getChildren().addAll(stateLabelData, participantsLabelData, facultiesLabelData, careersLabelData, budgetLabelData);
+        cardDataR.getChildren().addAll(stateLabelData, participantsLabelData, projectTypeLabelData, activitiesLabelData, budgetLabelData);
         cardData.setLeft(cardDataL);
         cardData.setRight(cardDataR);
         this.setCenter(cardData);
@@ -65,5 +66,33 @@ public class ProyectCard extends BorderPane {
         this.getStyleClass().add("card-panel");
         this.setBottom(manageButton);
         this.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+    }
+
+    private String proyectTypeToString(int proyectType) {
+        switch (proyectType) {
+            case 0:
+                return "De Investigación";
+                case 1:
+                    return "Educativo";
+                    case 2:
+                        return "De Infraestructura";
+                        case 3:
+                            return "Social";
+                            default:
+                                return "";
+        }
+    }
+
+    private String estadoToString(int estado) {
+        switch (estado) {
+            case 0:
+                return "En espera";
+                case 1:
+                    return "Iniciado";
+                    case 2:
+                        return "Finalizado";
+            default:
+                return "";
+        }
     }
 }

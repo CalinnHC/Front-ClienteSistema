@@ -13,7 +13,6 @@ public class ExtensionCard extends BorderPane{
     public ExtensionCard(Consumer<String> onButtonClicked, String extensionName, int extensionID) {
         this.extensionName = extensionName;
         this.extensionID = extensionID;
-        System.out.println("Contruyendo");
         Label extensionNameLabel = new Label(this.extensionName);
         extensionNameLabel.getStyleClass().add("card-proyect-name");
         extensionNameLabel.setFont(Font.font("Open Sans", FontWeight.BOLD, 20));

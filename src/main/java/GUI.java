@@ -1,6 +1,7 @@
 import Entity.Extension;
 import Entity.Proyecto;
 import Entity.Usuario;
+import Entity.Usuario_De_Proyecto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -50,10 +51,13 @@ public class GUI extends Application {
     private Usuario user;
     private Label errorLabel;
     private List<Proyecto> proyectos;
+    private List<Usuario_De_Proyecto> proyectosAsociados;
     private GridPane contentMainPane;
     private VBox extensionsMainPane = new VBox(10);
     private Proyecto proyecto;
     private BorderPane proyectoPane;
+    private ComboBox<String> proyectType;
+    private int actualExtensionID;
 
     @Override
     public void start(Stage mainStage) {
@@ -91,12 +95,14 @@ public class GUI extends Application {
         //Username TextField Config
         usernametextField = new TextField();
         usernametextField.setPromptText("Username");
+        usernametextField.setText("CalinnHC");
         usernametextField.setMinHeight(40);
         usernametextField.setStyle("-fx-background-color: FFFAFC; -fx-background-radius: 20;-fx-padding: 0 15 0 15;");
 
         //Password TextField Config
         passwordField = new PasswordField();
         passwordField.setPromptText("Contraseña");
+        passwordField.setText("Carlosbeto1");
         passwordField.setMinHeight(40);
         passwordField.setStyle("-fx-background-color: FFFAFC; -fx-background-radius: 20; -fx-padding: 0 15 0 15;");
 
@@ -157,8 +163,6 @@ public class GUI extends Application {
                     "\"nombreUsuario\": \"" + (usernametextField.getText() != null ? usernametextField.getText() : "") + "\"," +
                     "\"contrasena\": \"" + passwordField.getText() + "\"" +
                     "}";
-            System.out.println(jsonData);
-
 
             // Crear la solicitud HTTP
             HttpRequest request = HttpRequest.newBuilder()
@@ -176,9 +180,6 @@ public class GUI extends Application {
                     String userJson = response.body();
                     ObjectMapper mapper = new ObjectMapper();
                     user = mapper.readValue(userJson, Usuario.class);
-                    // Prueba el resultado
-                    System.out.println("Nombre: " + user.getNombre());
-                    System.out.println("Correo: " + user.getCorreo());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -303,7 +304,7 @@ public class GUI extends Application {
         searchTextField.setPromptText("buscar...");
         Button newProyectButton = new Button("Nuevo");
         newProyectButton.setOnAction(event -> {
-            userProyets();
+            createProyets();
         });
         newProyectButton.getStyleClass().add("hover-button");
         newProyectButton.setMinWidth(150);
@@ -434,15 +435,21 @@ public class GUI extends Application {
         registrationWindow.show();
     }
 
-    private void userProyets(){
+    private void createProyets(){
         clearContentPane();
         VBox newProyectContainer = new VBox(10);
-        TextField proyectIDTF = new TextField();
-        proyectIDTF.setPromptText("ID del Proyecto");
         TextField proyectNameTF = new TextField();
         proyectNameTF.setPromptText("Nombre del Proyecto");
         TextField coordinatorTF = new TextField();
         coordinatorTF.setPromptText("Coordinador Asignado");
+        coordinatorTF.setEditable(false);
+        coordinatorTF.setText(user.getIdUsuario() + "");
+        proyectType = new ComboBox<String>();
+        proyectType.setPromptText("Tipo de Proyecto");
+        proyectType.getItems().addAll("Proyecto de Investigación", "Proyecto Educativo", "Proyecto De Infraestructura", "Proyectos Social");
+        proyectType.setOnAction(event -> {
+            System.out.println(proyectType.getSelectionModel().getSelectedIndex());
+        });
         Label startDateLabel = new Label("Fecha de Inicio");
         DatePicker startDate = new DatePicker();
         Label endDateLabel = new Label("Fecha de Finalización");
@@ -461,14 +468,15 @@ public class GUI extends Application {
 
                 // Serializar los datos del proyecto
                 String jsonData = "{" +
-                        "\"idProyecto\": " + (proyectIDTF.getText() != null ? proyectIDTF.getText() : "null") + "," +
                         "\"ubicacion\": " + 1 + "," +
                         "\"nombre_de_la_extension\": \"" + (proyectNameTF.getText() != null ? proyectNameTF.getText() : "") + "\"," +
                         "\"fecha_De_Inicio\": \"" + (startDate.getValue() != null ? startDate.getValue().toString() : "") + "\"," +
                         "\"fecha_Estimada_De_Finalizacion\": \"" + (startDate.getValue() != null ? startDate.getValue().toString() : "") + "\"," +
-                        "\"coordinador\": " + 27501354 + "," +
+                        "\"coordinador\": " + coordinatorTF.getText() + "," +
+                        "\"TipoDeProyecto\": " + proyectType.getSelectionModel().getSelectedIndex() + "," +
                         "\"presupuesto\": " + (budgetTF.getText() != null ? budgetTF.getText() : "null") + "," +
                         "\"estado_Proyecto\": " + (1) + "," +
+                        "\"extension\": " + actualExtensionID + "," +
                         "\"comentarios\": \"" + (descriptionTF.getText() != null ? descriptionTF.getText() : "") + "\"" +
                         "}";
                 System.out.println(jsonData);
@@ -489,6 +497,7 @@ public class GUI extends Application {
                         ObjectMapper mapper = new ObjectMapper();
                         mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
                         proyecto = mapper.readValue(projectJson, Proyecto.class);
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -501,27 +510,27 @@ public class GUI extends Application {
                 e.printStackTrace();
             }
         });
-        newProyectContainer.getChildren().addAll(proyectIDTF, proyectNameTF,coordinatorTF, startDateLabel, startDate, endDateLabel,endDate,locationTF,descriptionTF,BudgetLabel, budgetTF, newProyectButton);
+        newProyectContainer.getChildren().addAll(proyectNameTF,coordinatorTF, proyectType,startDateLabel, startDate, endDateLabel,endDate,locationTF,descriptionTF,BudgetLabel, budgetTF, newProyectButton);
         contentPane.setCenter(newProyectContainer);
     }
 
-    public void clearContentPane(){
+    private void clearContentPane(){
         contentPane.setCenter(null);
         if (dateAndFilterContianer.getChildren().size() > 1) {
             dateAndFilterContianer.getChildren().remove(1);
         }
     }
 
-    public void showProyects(int id){
+    private void showProyects(int id){
         contentMainPane.getChildren().clear();
-        /*
+
         try {
             // Crear cliente HTTP
             HttpClient client = HttpClient.newHttpClient();
 
             // Crear la solicitud HTTP para obtener los proyectos
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://localhost:8094/Proyectos")) // URL de la API
+                    .uri(new URI("http://localhost:8094/ProyectoByIds/"+user.getIdUsuario() )) // URL de la API
                     .header("Content-Type", "application/json")
                     .GET()
                     .build();
@@ -536,57 +545,19 @@ public class GUI extends Application {
                 // Mapear la respuesta a una lista de objetos Proyecto
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
-                List<Proyecto> proyectos = mapper.readValue(jsonResponse, new TypeReference<List<Proyecto>>() {});
+                proyectos = mapper.readValue(jsonResponse, new TypeReference<List<Proyecto>>() {});
 
                 // Recorrer la lista de proyectos e imprimir los detalles
                 List<Button> proyectButtons = new ArrayList<>();
                 for (Proyecto proyecto : proyectos) {
-                    if(proyecto.getIdExtension() == id){
+                    if(proyecto.getExtension() == id){
                         ProyectCard projectCard = new ProyectCard(
-                                this::handleTarjetaClick,
+                                this::handleProyectCard,
                                 proyecto.getIdProyecto(),
                                 proyecto.getNombre_de_la_extension(), // Nombre del proyecto
                                 proyecto.getEstado_Proyecto() + "", // Estado del proyecto
                                 proyecto.getIdProyecto(), // Número de participantes
-                                proyecto.getIdProyecto(), // Número de facultades
-                                proyecto.getIdProyecto(), // Número de carreras
-                                (float) proyecto.getPresupuesto() // Presupuesto (convertido a float si es necesario)
-                        );
-                        contentMainPane.add(projectCard,counterx,countery);
-                        counterx++;
-                        if (counterx == 3){
-                            counterx = 0;
-                            countery++;
-                        }
-                    }
-                }
-            } else {
-                System.err.println("Error al obtener los proyectos: Código de estado " + response.statusCode());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-        try (InputStream inputStream = Main.class.getClassLoader().getResourceAsStream("proyects.json")) {
-            if (inputStream == null) {
-                throw new RuntimeException("Archivo JSON no encontrado");
-            }
-            else{
-                // Mapear la respuesta a una lista de objetos Proyecto
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
-                List<Proyecto> proyectos = mapper.readValue(inputStream, new TypeReference<List<Proyecto>>() {});
-
-                // Recorrer la lista de proyectos e imprimir los detalles
-                List<Button> proyectButtons = new ArrayList<>();
-                for (Proyecto proyecto : proyectos) {
-                    if(proyecto.getIdExtension() == id){
-                        ProyectCard projectCard = new ProyectCard(
-                                this::handleTarjetaClick,
-                                proyecto.getIdProyecto(),
-                                proyecto.getNombre_de_la_extension(), // Nombre del proyecto
-                                proyecto.getEstado_Proyecto() + "", // Estado del proyecto
-                                proyecto.getIdProyecto(), // Número de participantes
-                                proyecto.getIdProyecto(), // Número de facultades
+                                proyecto.getTipoDeProyecto(), // Número de facultades
                                 proyecto.getIdProyecto(), // Número de carreras
                                 (float) proyecto.getPresupuesto() // Presupuesto (convertido a float si es necesario)
                         );
@@ -600,24 +571,28 @@ public class GUI extends Application {
                 }
                 scrollMainPane.setContent(null);
                 scrollMainPane.setContent(contentMainPane);
+                counterx = 0;
+                countery = 0;
+            } else {
+                System.err.println("Error al obtener los proyectos: Código de estado " + response.statusCode());
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+
     }
 
-    public void showExtensions() {
+    private void showExtensions() {
         clearContentPane();
         scrollMainPane = new ScrollPane();
-        /*
         try {
             // Crear cliente HTTP
             HttpClient client = HttpClient.newHttpClient();
 
             // Crear la solicitud HTTP para obtener los proyectos
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("http://localhost:8094/Extensiones")) // URL de la API
+                    .uri(new URI("http://localhost:8094/extensions")) // URL de la API
                     .header("Content-Type", "application/json")
                     .GET()
                     .build();
@@ -636,68 +611,51 @@ public class GUI extends Application {
 
                 // Recorrer la lista de proyectos e imprimir los detalles
                 List<Button> proyectButtons = new ArrayList<>();
-
-                for (Extension extension : extensiones) {
-                    ExtensionCard extensionCard = new ExtensionCard(
-                            this::handleTarjetaClick,
-                            extension.getNombre_de_la_extension(),
-                            extension.getIdExtension()
-                    );
-                    extensionsMainPane.getChildren().add(extensionCard);
-                }
-            } else {
-                System.err.println("Error al obtener los proyectos: Código de estado " + response.statusCode());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-        try (InputStream inputStream = Main.class.getClassLoader().getResourceAsStream("extensions.json")) {
-            if (inputStream == null) {
-                throw new RuntimeException("Archivo JSON no encontrado");
-            }
-            else{
-                System.out.println(inputStream);
-                // Mapear la respuesta a una lista de objetos Proyecto
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
-                List<Extension> extensiones = mapper.readValue(inputStream, new TypeReference<List<Extension>>() {});
-
-                // Recorrer la lista de proyectos e imprimir los detalles
-                List<Button> proyectButtons = new ArrayList<>();
-
+                extensionsMainPane.getChildren().clear();
                 for (Extension extension : extensiones) {
                     ExtensionCard extensionCard = new ExtensionCard(
                             this::handleExtensionCard,
-                            extension.getNombre_de_la_extension(),
+                            extension.getNombre_Extension(),
                             extension.getIdExtension()
                     );
                     extensionsMainPane.getChildren().add(extensionCard);
                 }
                 scrollMainPane.setContent(extensionsMainPane);
                 contentPane.setCenter(scrollMainPane);
+            } else {
+                System.err.println("Error al obtener los proyectos: Código de estado " + response.statusCode());
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         extensionsMainPane.setStyle("-fx-padding: 10");
         scrollMainPane.setFitToWidth(true);
 
     }
 
-    public void manageProyect(){
+    private void manageProyect(String id){
         clearContentPane();
+        System.out.println("Proyecto: "+id);
         proyectoPane = new BorderPane();
-        proyectoPane.setCenter(new ProyectTab());
+        Proyecto proyectoSeleccionado = new Proyecto();
+        for (Proyecto proyecto : proyectos) {
+            if(proyecto.getIdProyecto() == Integer.parseInt(id)){
+                proyectoSeleccionado = proyecto;
+            }
+        }
+        proyectoPane.setCenter(new ProyectTab(proyectoSeleccionado));
         contentPane.setCenter(proyectoPane);
     }
 
-    private void handleTarjetaClick(String id) {
-        manageProyect();
+    private void handleProyectCard(String id) {
+        manageProyect(id);
     }
 
     private void handleExtensionCard(String id) {
         showSearchPanel();
-        System.out.println(1);
+        actualExtensionID = Integer.parseInt(id);
+        System.out.println("Extensión: " + id);
         showProyects(Integer.parseInt(id));
     }
 

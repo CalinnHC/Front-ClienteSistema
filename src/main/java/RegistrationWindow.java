@@ -85,6 +85,7 @@ public class RegistrationWindow extends Stage {
 
             if (response.statusCode() == 200) {
                 System.out.println("Registro enviado con éxito: " + response.body());
+                this.close();
             } else {
                 System.err.println("Error al enviar registro: " + response.statusCode());
             }

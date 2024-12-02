@@ -3,7 +3,7 @@ package Entity;
 public class Proyecto {
     private int idProyecto;
     private int ubicacion;
-    private int idExtension;
+    private int extension;
     private String nombre_de_la_extension;
     private String fecha_De_Inicio; // Usamos String para compatibilidad con JSON, puede cambiarse a LocalDate
     private String fecha_Estimada_De_Finalizacion;
@@ -11,12 +11,13 @@ public class Proyecto {
     private double presupuesto;
     private int estado_Proyecto;
     private String comentarios;
+    private int TipoDeProyecto;
 
     // Constructor vacío (necesario para la deserialización)
     public Proyecto() {
     }
 
-    public Proyecto(int idProyecto, int ubicacion, String nombre_de_la_extension, String fecha_De_Inicio, String fecha_Estimada_de_Finalizacion, int coordinador, double presupuesto, int estado_Proyecto, String comentarios, int idExtension) {
+    public Proyecto(int idProyecto, int ubicacion, String nombre_de_la_extension, String fecha_De_Inicio, String fecha_Estimada_de_Finalizacion, int coordinador, double presupuesto, int estado_Proyecto, String comentarios, int extension) {
         this.idProyecto = idProyecto;
         this.ubicacion = ubicacion;
         this.nombre_de_la_extension = nombre_de_la_extension;
@@ -26,7 +27,7 @@ public class Proyecto {
         this.presupuesto = presupuesto;
         this.estado_Proyecto = estado_Proyecto;
         this.comentarios = comentarios;
-        this.idExtension = idExtension;
+        this.extension = extension;
     }
 
     public int getIdProyecto() {
@@ -35,6 +36,22 @@ public class Proyecto {
 
     public void setIdProyecto(int idProyecto) {
         this.idProyecto = idProyecto;
+    }
+
+    public int getExtension() {
+        return extension;
+    }
+
+    public void setExtension(int extension) {
+        this.extension = extension;
+    }
+
+    public int getTipoDeProyecto() {
+        return TipoDeProyecto;
+    }
+
+    public void setTipoDeProyecto(int tipoDeProyecto) {
+        TipoDeProyecto = tipoDeProyecto;
     }
 
     public int getUbicacion() {
@@ -101,13 +118,6 @@ public class Proyecto {
         this.comentarios = comentarios;
     }
 
-    public int getIdExtension() {
-        return idExtension;
-    }
-
-    public void setIdExtension(int idExtension) {
-        this.idExtension = idExtension;
-    }
 
     public String getFecha_Estimada_De_Finalizacion() {
         return fecha_Estimada_De_Finalizacion;
@@ -122,7 +132,7 @@ public class Proyecto {
         return "Proyecto{" +
                 "idProyecto=" + idProyecto +
                 ", ubicacion=" + ubicacion +
-                ", idExtension=" + idExtension +
+                ", extension=" + extension +
                 ", nombre_de_la_extension='" + nombre_de_la_extension + '\'' +
                 ", fecha_De_Inicio='" + fecha_De_Inicio + '\'' +
                 ", fecha_Estimada_De_Finalizacion='" + fecha_Estimada_De_Finalizacion + '\'' +
@@ -130,6 +140,7 @@ public class Proyecto {
                 ", presupuesto=" + presupuesto +
                 ", estado_Proyecto=" + estado_Proyecto +
                 ", comentarios='" + comentarios + '\'' +
+                ", TipoDeProyecto=" + TipoDeProyecto +
                 '}';
     }
 }
