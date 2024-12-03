@@ -88,7 +88,7 @@ public class Actividades {
 
     @Override
     public String toString() {
-        return "Actividades{" +
+        return "{" +
                 "idActividad=" + idActividad +
                 ", proyecto_Asociado=" + proyecto_Asociado +
                 ", nombre='" + nombre + '\'' +

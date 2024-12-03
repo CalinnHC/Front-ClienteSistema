@@ -36,21 +36,25 @@ public class ProyectTab extends BorderPane {
     private Button activitiesButton = new Button("Actividades");
     private Button HRButton = new Button("Recursos Humanos");
     private Button participantsButton = new Button("Participantes");
+    private Button activityManagerButton = new Button("Gestionar Actividades");
     private Button financingButton = new Button("Financiación");
     private Button newParticipantButton= new Button("Nuevo Participante");
     private Button newActivityButton = new Button("Nueva Actividad");
+    private Usuario user;
     private int proyectID;
     Actividades actividad;
     ComboBox<String> rolCB;
     int comboValue = 2;
     ComboBox<String> asignedUserCB;
     List<Usuario> proyectUsers = new ArrayList<Usuario>();
+    List<Actividades> userActivities = new ArrayList<>();
     private Proyecto proyecto;
 
-    public ProyectTab(Proyecto selectedProyect) {
+    public ProyectTab(Proyecto selectedProyect, Usuario user) {
+        this.user = user;
         this.proyectID = selectedProyect.getIdProyecto();
         this.proyecto = selectedProyect;
-        proyectButtons.getChildren().addAll(activitiesButton, participantsButton);
+        proyectButtons.getChildren().addAll(activitiesButton, participantsButton, activityManagerButton);
         proyectButtons.setAlignment(Pos.CENTER);
         proyectButtons.setSpacing(10);
         Label proyectTitle = new Label(proyecto.getNombre_de_la_extension());
@@ -62,6 +66,9 @@ public class ProyectTab extends BorderPane {
         participantsButton.setOnAction(actionEvent -> {
            showParticipants();
         });
+        activityManagerButton.setOnAction(actionEvent -> {
+           editActivities();
+        });
         proyectContent.setTop(buttonsVBox);
         proyectContent.setCenter(activitiesVBox);
         proyectContent.getStyleClass().add("cardProyect-panel");
@@ -69,6 +76,7 @@ public class ProyectTab extends BorderPane {
         proyectTitle.getStyleClass().add("title-label");
         activitiesButton.getStyleClass().add("toolBar-button");
         participantsButton.getStyleClass().add("toolBar-button");
+        activityManagerButton.getStyleClass().add("toolBar-button");
         newParticipantButton.getStyleClass().add("hover-button");
         newActivityButton.getStyleClass().add("hover-button");
         proyectButtons.setStyle("-fx-font-weight: bold; -fx-border-width: 1 0 1 0; -fx-border-color: C1BBD6;");
@@ -89,34 +97,14 @@ public class ProyectTab extends BorderPane {
         newParticipantButton.setOnAction(actionEvent -> {
             newParticipant();
         });
-        TableView<Usuario> participantsTable = new TableView<>();
-
-        TableColumn<Usuario, String> idColumn = new TableColumn<>("ID");
-        idColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getIdUsuario() + ""));
-
-        TableColumn<Usuario, String> nameColumn = new TableColumn<>("Nombre");
-        nameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNombre()));
-
-        TableColumn<Usuario, String> lastNameColumn = new TableColumn<>("Apellido");
-        lastNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getApellido()));
-
-        TableColumn<Usuario, String> mailColumn = new TableColumn<>("Correo");
-        mailColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getCorreo()));
-
-        TableColumn<Usuario, String> rolColumn = new TableColumn<>("Rol");
-        rolColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getIdRol() + ""));
-
-
-        participantsTable.getColumns().addAll(idColumn, nameColumn, lastNameColumn, mailColumn, rolColumn);
-
-
-        for (Usuario usuario : proyectUsers) {
-            participantsTable.getItems().add(usuario);
-        }
         participantsVBox.getChildren().add(newParticipantButton);
+        VBox participantsTable = new VBox();
+        participantsVBox.setSpacing(10);
+        participantsTable.getChildren().add(new ParticipantsLine());
+        for (Usuario usuario : proyectUsers) {
+            participantsTable.getChildren().add(new ParticipantsLine(usuario));
+        }
         participantsVBox.getChildren().add(participantsTable);
-
-
     }
 
     public void showActivities(){
@@ -166,6 +154,37 @@ public class ProyectTab extends BorderPane {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void editActivities(){
+        proyectContent.setCenter(null);
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8094/idActividadesByUsuarioAsignado/" + user.getIdUsuario() )) // URL de la API
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
+            // Enviar la solicitud y manejar la respuesta
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                // Procesar la respuesta JSON
+                String jsonResponse = response.body();
+                System.out.println("Respuesta obtenida: " + jsonResponse);
+
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+                userActivities = mapper.readValue(jsonResponse, new TypeReference<List<Actividades>>() {});
+
+            } else {
+                System.err.println("Error al obtener los proyectos: Código de estado " + response.statusCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        proyectContent.setCenter(new ActivityCard(userActivities));
+        activitiesVBox.getChildren().clear();
     }
 
     public void setupTabs(){
@@ -235,7 +254,8 @@ public class ProyectTab extends BorderPane {
 
     public void newActivity(){
         proyectContent.setCenter(null);
-        proyectContent.setCenter(activitiesVBox);
+        VBox newActivityVBox = new VBox();
+        proyectContent.setCenter(newActivityVBox);
         activitiesVBox.getChildren().clear();
         Label newActivityLabel = new Label("Nuevo Actividad");
         TextField activityNameTF = new TextField();
@@ -250,6 +270,13 @@ public class ProyectTab extends BorderPane {
         TextField descriptionTF = new TextField();
         descriptionTF.setPromptText("Descripción");
         Button addActivityButton = new Button("Agregar");
+        newActivityLabel.getStyleClass().add("title-label");
+        activityNameTF.getStyleClass().add("search-textField");
+        asignedUserCB.getStyleClass().add("combo-box");
+        StartActivityDate.getStyleClass().add("date-picker");
+        EndActivityDate.getStyleClass().add("date-picker");
+        descriptionTF.getStyleClass().add("search-textField");
+        addActivityButton.getStyleClass().add("hover-button");
         addActivityButton.setOnAction(actionEvent -> {
             try {
                 HttpClient client = HttpClient.newHttpClient();
@@ -301,7 +328,9 @@ public class ProyectTab extends BorderPane {
             activitiesVBox.getChildren().addAll(newActivityLabel,backButton);
 
         });
-        activitiesVBox.getChildren().addAll(activityNameTF, asignedUserCB, StartActivityDate, EndActivityDate, descriptionTF, addActivityButton);
+        newActivityVBox.setSpacing(10);
+        newActivityVBox.setStyle("-fx-padding: 10");
+        newActivityVBox.getChildren().addAll(activityNameTF, asignedUserCB, StartActivityDate, EndActivityDate, descriptionTF, addActivityButton);
 
     }
 

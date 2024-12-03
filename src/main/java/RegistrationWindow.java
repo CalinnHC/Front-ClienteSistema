@@ -61,6 +61,21 @@ public class RegistrationWindow extends Stage {
         // Configurar la nueva ventana
         this.setTitle("Registro");
         this.setScene(registrationScene);
+        registrationLabel.getStyleClass().add("title-label");
+        usernameField.getStyleClass().add("search-textField");
+        nameTF.getStyleClass().add("search-textField");
+        lastnameTF.getStyleClass().add("search-textField");
+        idTF.getStyleClass().add("search-textField");
+        passwordTF.getStyleClass().add("search-textField");
+        idTF.getStyleClass().add("search-textField");
+        emailTF.getStyleClass().add("search-textField");
+        phoneTF.getStyleClass().add("search-textField");
+        birthdateLabel.getStyleClass().add("sub-label");
+        birthdatePicker.getStyleClass().add("date-picker");
+        registrationButton.getStyleClass().add("hover-button");
+        vbox.setStyle("-fx-padding: 10");
+        registrationScene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
     }
 
     private void enviarDatos() {

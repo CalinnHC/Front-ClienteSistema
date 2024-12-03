@@ -423,10 +423,11 @@ public class GUI extends Application {
         notificationsLabel.setFont(Font.font("Open Sans", FontWeight.BOLD, 20));
         Label notificationLabel = new Label("Se muestran las Notificaciones");
         notificationLabel.setFont(Font.font("Open Sans", FontWeight.NORMAL, 15));
-        notificationsPane.getChildren().addAll(notificationsLabel, notificationLabel);
+        notificationsPane.getChildren().addAll(notificationsLabel, new NotificationsLine(user.getIdUsuario()));
         notificationsPane.getStyleClass().add("user-panel");
         notificationsBackPane.setStyle("-fx-background-color: C1BBD6; -fx-padding: 10;");
         notificationsBackPane.setCenter(notificationsPane);
+
         contentPane.setCenter(notificationsBackPane);
     }
 
@@ -438,6 +439,8 @@ public class GUI extends Application {
     private void createProyets(){
         clearContentPane();
         VBox newProyectContainer = new VBox(10);
+        newProyectContainer.setStyle("-fx-padding: 10; -fx-background-radius: 32; -fx-background-color: FFFAFC");
+        Label newProyectLabel = new Label("Nuevo Proyecto");
         TextField proyectNameTF = new TextField();
         proyectNameTF.setPromptText("Nombre del Proyecto");
         TextField coordinatorTF = new TextField();
@@ -461,6 +464,21 @@ public class GUI extends Application {
         Label BudgetLabel = new Label("Presupuesto Inicial");
         TextField budgetTF = new TextField();
         Button newProyectButton = new Button("Registrar");
+        newProyectLabel.getStyleClass().add("title-label");
+        proyectNameTF.getStyleClass().add("search-textField");
+        coordinatorTF.getStyleClass().add("search-textField");
+        startDateLabel.getStyleClass().add("date-label");
+        startDate.getStyleClass().add("date-picker");
+        endDateLabel.getStyleClass().add("sub-label");
+        endDate.getStyleClass().add("date-picker");
+        locationTF.getStyleClass().add("search-textField");
+        descriptionTF.getStyleClass().add("search-textField");
+        BudgetLabel.getStyleClass().add("sub-label");
+        budgetTF.getStyleClass().add("search-textField");
+        proyectType.getStyleClass().add("combo-box");
+        newProyectButton.getStyleClass().add("hover-button");
+
+        newProyectContainer.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         newProyectButton.setOnAction(event -> {
             try {
                 // Crear cliente HTTP
@@ -510,8 +528,9 @@ public class GUI extends Application {
                 e.printStackTrace();
             }
         });
-        newProyectContainer.getChildren().addAll(proyectNameTF,coordinatorTF, proyectType,startDateLabel, startDate, endDateLabel,endDate,locationTF,descriptionTF,BudgetLabel, budgetTF, newProyectButton);
+        newProyectContainer.getChildren().addAll(newProyectLabel, proyectNameTF,coordinatorTF, proyectType,startDateLabel, startDate, endDateLabel,endDate,locationTF,descriptionTF,BudgetLabel, budgetTF, newProyectButton);
         contentPane.setCenter(newProyectContainer);
+        contentPane.setStyle("-fx-padding: 10");
     }
 
     private void clearContentPane(){
@@ -644,7 +663,7 @@ public class GUI extends Application {
                 proyectoSeleccionado = proyecto;
             }
         }
-        proyectoPane.setCenter(new ProyectTab(proyectoSeleccionado));
+        proyectoPane.setCenter(new ProyectTab(proyectoSeleccionado, user));
         contentPane.setCenter(proyectoPane);
     }
 

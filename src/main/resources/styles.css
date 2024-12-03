@@ -2,7 +2,7 @@
     -fx-background-color: #F4E100; /* Color de fondo inicial */
     -fx-transition: background-color 1s ease;
     -fx-text-fill: black;           /* Color del texto */
-    -fx-padding: 5;
+    -fx-padding: 3 10 3 10;
     -fx-font-size: 16px;            /* Tamaño de la fuente */
     -fx-background-radius: 32;      /* Bordes redondeados */
     -fx-font-weight: Bold;
@@ -105,16 +105,8 @@
     -fx-alignment: center;
 
 }
-.search-textField{
-    -fx-border-color: black;
-    -fx-border-width: 1px;
-    -fx-border-radius: 20px;
-    -fx-background-color: FFFAFC;
-}
-/*Card format*/
-.card-proyect-name{
 
-}
+/*Card format*/
 .card-panel{
     -fx-background-color: FFFAFC;
     -fx-border-radius: 32;
@@ -165,4 +157,64 @@
     -fx-opacity: 0;
     -fx-pref-height: 0;
     -fx-pref-width: 0;
+}
+
+.date-picker {
+    -fx-border-color: black; /* Borde gris oscuro */
+    -fx-border-width: 1;
+    -fx-background-color: FFFAFC;
+    -fx-border-radius: 32; /* Bordes redondeados */
+    -fx-background-radius: 32; /* Fondo redondeado */
+    -fx-padding: 0 10 0 10; /* Espaciado interno */
+    -fx-font-family: "Open Sans"; /* Fuente */
+}
+
+.date-picker:focused {
+    -fx-border-color: black; /* Cambia el color del borde cuando está enfocado */
+}
+.date-picker .text-field {
+    -fx-background-color: transparent; /* Fondo transparente */
+    -fx-border-color: transparent; /* Sin borde alrededor del texto */
+    -fx-text-fill: black; /* Color del texto */
+    -fx-font-size: 14px; /* Tamaño de la fuente */
+    -fx-padding: 5; /* Espaciado interno */
+}
+
+
+.combo-box {
+    -fx-border-color: black; /* Borde gris oscuro */
+    -fx-border-radius: 32; /* Bordes redondeados */
+    -fx-background-radius: 32; /* Fondo redondeado */
+    -fx-padding: 5; /* Espaciado interno */
+    -fx-font-size: 14px; /* Tamaño de fuente */
+    -fx-font-family: "Arial"; /* Fuente */
+    -fx-text-fill: black; /* Color del texto */
+    -fx-background-color: FFFAFC;
+}
+
+.search-textField{
+    -fx-border-color: black;
+    -fx-border-width: 1px;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-background-color: FFFAFC;
+}
+.sub-label{
+    -fx-font-family: "Open Sans";
+    -fx-font-size: 16;
+}
+.table-label{
+    -fx-font-family: "Open Sans";
+    -fx-font-size: 16;
+    -fx-border-width: 1 1 1 1;
+    -fx-border-color: black;
+    -fx-alignment: center;
+}
+.table-label2{
+    -fx-font-family: "Open Sans";
+    -fx-font-size: 16;
+    -fx-border-width: 1 1 1 1;
+    -fx-border-color: black;
+    -fx-background-color: #b0caaa;
+    -fx-alignment: center;
 }
