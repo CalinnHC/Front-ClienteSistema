@@ -23,6 +23,7 @@ public class NotificationsLine extends VBox {
         this.setSpacing(10);
         getNotifications();
         this.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
     }
     public void getNotifications(){
         try {
@@ -43,10 +44,14 @@ public class NotificationsLine extends VBox {
                 mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
                 List<Notificaciones> notificaciones = mapper.readValue(jsonResponse, new TypeReference<List<Notificaciones>>() {});
                 if (notificaciones.size() > 0) {
-                    for (Notificaciones notificacion : notificaciones) {
+                    for (int i = notificaciones.size() - 1; i >= 0; i--) {
+                        Notificaciones notificacion = notificaciones.get(i);
+                        HBox hbox = new HBox();
                         Label notificationLabel = new Label(notificacion.getDescripcion());
-                        notificationLabel.getStyleClass().add("sub-label");
-                        this.getChildren().add(notificationLabel);
+                        notificationLabel.getStyleClass().add("not-label");
+                        hbox.setStyle("-fx-background-color: rgba(193, 187, 214, 0.5); -fx-background-radius: 15; -fx-padding: 10");
+                        hbox.getChildren().add(notificationLabel);
+                        this.getChildren().add(hbox);
                     }
                 }
                 else{

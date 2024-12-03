@@ -30,6 +30,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +59,7 @@ public class GUI extends Application {
     private Proyecto proyecto;
     private BorderPane proyectoPane;
     private ComboBox<String> proyectType;
+    private int extentionID;
     private int actualExtensionID;
 
     @Override
@@ -79,6 +82,8 @@ public class GUI extends Application {
         setupLoginScene();
         mainStage.setScene(loginScene);
         mainStage.show();
+        String iconPath = getClass().getResource("/logope.png").toExternalForm();
+        primaryStage.getIcons().add(new Image(iconPath));
     }
 
     /**
@@ -89,9 +94,9 @@ public class GUI extends Application {
         Label loginLabel = new Label("INICIAR SESIÓN");
         loginLabel.setFont(Font.font("Open Sans", FontWeight.BOLD, 30));
         errorLabel = new Label("Usuario o contraseña incorrectos");
-        errorLabel.setFont(Font.font("Open Sans", FontWeight.NORMAL, 10));
-        errorLabel.setStyle("-fx-text-fill: red;");
-        errorLabel.setVisible(false);
+        errorLabel.setFont(Font.font("Open Sans", FontWeight.NORMAL, 12));
+        errorLabel.setStyle("-fx-text-fill: red; -fx-padding: 0");
+        errorLabel.setManaged(false);
         //Username TextField Config
         usernametextField = new TextField();
         usernametextField.setPromptText("Username");
@@ -134,7 +139,9 @@ public class GUI extends Application {
         registerContainer.getChildren().addAll(registerLabel, registerListenerLabel);
         // Contenedor para los elementos del login
         VBox loginContainer = new VBox(30);  // Espacio de 10 píxeles entre elementos
-        loginContainer.getChildren().addAll(loginLabel,errorLabel, usernametextField, passwordField, loginButton, registerContainer);
+        VBox userAnderrorContainer = new VBox(10);
+        userAnderrorContainer.getChildren().addAll(errorLabel,usernametextField );
+        loginContainer.getChildren().addAll(loginLabel, userAnderrorContainer, passwordField, loginButton, registerContainer);
         loginContainer.setAlignment(Pos.CENTER);
         loginContainer.setPadding(new Insets(50));  // Padding interno dentro de loginContainer
         loginContainer.setStyle("-fx-background-color: C1BBD6; -fx-background-radius: 32");
@@ -185,7 +192,7 @@ public class GUI extends Application {
                 }
                 setupMainScene();
             } else {
-                errorLabel.setVisible(true);
+                errorLabel.setManaged(true);
                 System.err.println("Error al iniciar sesion: " + response.statusCode());
             }
         } catch (Exception e) {
@@ -212,7 +219,7 @@ public class GUI extends Application {
         int iconSize = 40; // Tamaño de los iconos de los botones
 
         //Formato del boton de Inicio
-        ImageView imageViewHome = new ImageView(new Image("/home-filled (1).png"));
+        ImageView imageViewHome = new ImageView(new Image("/logope.png"));
         imageViewHome.setFitWidth(iconSize);
         imageViewHome.setFitHeight(iconSize);
         Button homeButton = new Button("Inicio", imageViewHome);
@@ -236,6 +243,7 @@ public class GUI extends Application {
         taskimageView.setFitWidth(iconSize);
         taskimageView.setFitHeight(iconSize);
         Button tasksButton = new Button("Tareas", taskimageView);
+        tasksButton.setVisible(false);
         tasksButton.setOnAction(event -> {
             taskScene();
         });
@@ -266,7 +274,7 @@ public class GUI extends Application {
 
         //Contenedor de Fecha
         BorderPane dateContainer = new BorderPane();
-        Label dateLabel = new Label("13 de octubre de 2024");
+        Label dateLabel = new Label(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + "");
         dateLabel.setFont(Font.font("Open Sans", FontWeight.BOLD, 20));
         ImageView imageViewNoti2 = new ImageView(new Image("/bell-filled.png"));
         imageViewNoti2.setFitWidth(iconSize);
@@ -302,6 +310,10 @@ public class GUI extends Application {
         TextField searchTextField = new TextField();
         searchTextField.getStyleClass().add("search-textField");
         searchTextField.setPromptText("buscar...");
+        searchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            searchProyect(newValue);
+        });
+
         Button newProyectButton = new Button("Nuevo");
         newProyectButton.setOnAction(event -> {
             createProyets();
@@ -311,10 +323,10 @@ public class GUI extends Application {
         newProyectButton.setMaxHeight(20);
         filterContainer.setMaxHeight(60);
         filterContainer.setMinHeight(60);
-        filterContainer.getChildren().addAll(filterButton, searchImageView, searchTextField);
+        filterContainer.getChildren().addAll( searchImageView, searchTextField);
         filterPane.setLeft(filterContainer);
         filterPane.setRight(newProyectButton);
-        filterPane.setStyle("-fx-padding: 0 10 0 0;");
+        filterPane.setStyle("-fx-padding: 0 10 0 10;");
         BorderPane.setAlignment(filterContainer, Pos.CENTER);
         BorderPane.setAlignment(newProyectButton, Pos.CENTER);
         dateAndFilterContianer.getChildren().addAll(filterPane);
@@ -675,11 +687,50 @@ public class GUI extends Application {
         showSearchPanel();
         actualExtensionID = Integer.parseInt(id);
         System.out.println("Extensión: " + id);
+        extentionID = Integer.parseInt(id);
         showProyects(Integer.parseInt(id));
     }
 
     private void showSearchPanel(){
         dateAndFilterContianer.getChildren().add(filterPane);
+    }
+
+    private void searchProyect(String name) {
+        contentMainPane.getChildren().clear();
+        for (Proyecto proyecto : proyectos) {
+            // Verificar que el nombre comience con la cadena proporcionada (ignorando mayúsculas/minúsculas)
+            if (proyecto.getExtension() == extentionID &&
+                    proyecto.getNombre_de_la_extension().toLowerCase().startsWith(name.toLowerCase())) {
+
+                ProyectCard projectCard = new ProyectCard(
+                        this::handleProyectCard,
+                        proyecto.getIdProyecto(),
+                        proyecto.getNombre_de_la_extension(), // Nombre del proyecto
+                        proyecto.getEstado_Proyecto() + "",  // Estado del proyecto
+                        proyecto.getIdProyecto(),           // Número de participantes
+                        proyecto.getTipoDeProyecto(),       // Número de facultades
+                        proyecto.getIdProyecto(),           // Número de carreras
+                        (float) proyecto.getPresupuesto()   // Presupuesto (convertido a float si es necesario)
+                );
+
+                contentMainPane.add(projectCard, counterx, countery);
+                counterx++;
+                if (counterx == 3) {
+                    counterx = 0;
+                    countery++;
+                }
+            }
+        }
+
+        scrollMainPane.setContent(null);
+        scrollMainPane.setContent(contentMainPane);
+        counterx = 0;
+        countery = 0;
+
+        if (contentMainPane.getChildren().isEmpty()) {
+            Label emptyProyect = new Label("No existen proyectos");
+            contentMainPane.getChildren().add(emptyProyect);
+        }
     }
 
     public static void main(String[] args) {
