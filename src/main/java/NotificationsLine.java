@@ -22,6 +22,7 @@ public class NotificationsLine extends VBox {
         this.userID = userID;
         this.setSpacing(10);
         getNotifications();
+        this.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
     }
     public void getNotifications(){
         try {
@@ -44,6 +45,7 @@ public class NotificationsLine extends VBox {
                 if (notificaciones.size() > 0) {
                     for (Notificaciones notificacion : notificaciones) {
                         Label notificationLabel = new Label(notificacion.getDescripcion());
+                        notificationLabel.getStyleClass().add("sub-label");
                         this.getChildren().add(notificationLabel);
                     }
                 }
