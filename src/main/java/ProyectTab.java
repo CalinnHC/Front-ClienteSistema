@@ -48,7 +48,9 @@ public class ProyectTab extends BorderPane {
     ComboBox<String> asignedUserCB;
     List<Usuario> proyectUsers = new ArrayList<Usuario>();
     List<Actividades> userActivities = new ArrayList<>();
+    List<Usuario_De_Proyecto> userRol = new ArrayList<>();
     private Proyecto proyecto;
+
 
     public ProyectTab(Proyecto selectedProyect, Usuario user) {
         this.user = user;
@@ -102,7 +104,11 @@ public class ProyectTab extends BorderPane {
         participantsVBox.setSpacing(10);
         participantsTable.getChildren().add(new ParticipantsLine());
         for (Usuario usuario : proyectUsers) {
-            participantsTable.getChildren().add(new ParticipantsLine(usuario));
+            for(Usuario_De_Proyecto rol: userRol){
+                if (rol.getIdUsuario() == usuario.getIdUsuario()){
+                    participantsTable.getChildren().add(new ParticipantsLine(usuario, rol.getIdRol()));
+                }
+            }
         }
         participantsVBox.getChildren().add(participantsTable);
     }
@@ -207,6 +213,11 @@ public class ProyectTab extends BorderPane {
         rolCB.getItems().addAll("Coordinador", "Usuario de Actividad");
         rolCB.setValue("Usuario de Actividad");
         Button addParticipantButton = new Button("Agregar");
+        newParticipantLabel.getStyleClass().add("title-label");
+        IDTextField.getStyleClass().add("search-textField");
+        rolCB.getStyleClass().add("combo-box");
+        addParticipantButton.getStyleClass().add("hover-button");
+
         addParticipantButton.setOnAction(actionEvent -> {
             rolCombo();
             try {
@@ -360,8 +371,8 @@ public class ProyectTab extends BorderPane {
                 // Mapear la respuesta a una lista de objetos Proyecto
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
-                List<Usuario_De_Proyecto> usuarios_De_Proyecto = mapper.readValue(jsonResponse, new TypeReference<List<Usuario_De_Proyecto>>() {});
-                for (Usuario_De_Proyecto usuario : usuarios_De_Proyecto) {
+                userRol = mapper.readValue(jsonResponse, new TypeReference<List<Usuario_De_Proyecto>>() {});
+                for (Usuario_De_Proyecto usuario : userRol) {
 
                     try {
                         // Crear cliente HTTP

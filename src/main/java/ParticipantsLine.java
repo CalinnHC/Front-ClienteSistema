@@ -19,7 +19,7 @@ import java.net.http.HttpResponse;
 
 public class ParticipantsLine extends HBox {
     Usuario usuario;
-    public ParticipantsLine(Usuario usuario1) {
+    public ParticipantsLine(Usuario usuario1, int id) {
         usuario = usuario1;
         Label idLabel = new Label(""+usuario.getIdUsuario());
         idLabel.getStyleClass().add("table-label");
@@ -31,7 +31,7 @@ public class ParticipantsLine extends HBox {
         lastnameLabel.getStyleClass().add("table-label");
         Label mailLabel = new Label(usuario.getCorreo());
         mailLabel.getStyleClass().add("table-label");
-        Label rolLabel = new Label(setRolLabel(usuario.getIdRol()));
+        Label rolLabel = new Label(setRolLabel(id));
         rolLabel.getStyleClass().add("table-label");
         this.setAlignment(Pos.CENTER);
         idLabel.setPrefSize(120,40);

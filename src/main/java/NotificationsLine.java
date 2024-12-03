@@ -38,7 +38,6 @@ public class NotificationsLine extends VBox {
                 // Procesar la respuesta JSON
                 String jsonResponse = response.body();
                 System.out.println("Respuesta obtenida: " + jsonResponse);
-
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
                 List<Notificaciones> notificaciones = mapper.readValue(jsonResponse, new TypeReference<List<Notificaciones>>() {});
